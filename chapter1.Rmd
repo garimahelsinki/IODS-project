@@ -3,10 +3,19 @@
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
 
+_Hi I am Garima. In the previous period, I was a student of Quantitative skills and thats where I heard about the course_
+_This course, according to my understanding will help me explore data more freely and will enhance my knowledge on wrangling with data in a more professional and precise manner. As this is an advanced level course, I truly believe it will further help me with my masters thesis too especially while working out my methodology_
+
+_i didnt do the exercise set 1 crash course, as I have used the same book in my previous course which used it quite intensively throughout the timeline of the course. But my favourite chapter fromt the RHDS book are chapter 3, 4 and 5 as they are once that truly helped me with my basics. I truly enjoy using the mutate function and also visualising different plots_
+
+**My Git Repository link : https://github.com/garimahelsinki/IODS-project.git**
+
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
 
 date()
+
+
 
 ```
 The text continues here.
