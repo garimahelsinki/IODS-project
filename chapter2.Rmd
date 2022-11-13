@@ -20,6 +20,10 @@ Data2 <- read_csv("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/learning20
 Data2
 
 ```
+**Observation**
+*The data contains 180 rows and 60 columns representing various variables like Age, attitude, Points, Gender, etc*
+*The data has 56 variable relating to multiple academic based questions with 4 variable representing their Age, Attitude, Points and Gender*
+
 ## Visualizations with ggplot2
 
 ```{r}
