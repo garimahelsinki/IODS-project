@@ -1,4 +1,4 @@
-# Insert chapter 2 title here
+# Multiple regression Analysis
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -11,3 +11,152 @@ date()
 ```
 
 Here we go again...
+```{r}
+
+setwd("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data")
+
+library(readr)
+Data2 <- read_csv("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/learning2014.csv",show_col_types = FALSE)
+Data2
+
+```
+## Visualizations with ggplot2
+
+```{r}
+# Access the gglot2 library
+library(ggplot2)
+
+# initialize plot with data and aesthetic mapping
+p1 <- ggplot(Data2, aes(x = attitude, y = points, col = gender))
+
+
+# define the visualization type (points)
+p2 <- p1 + geom_point()
+
+# draw the plot
+p2
+
+# add a regression line
+p3 <- p2 + geom_smooth(method = "lm")
+
+p3
+
+# add a main title
+p4 <- p3 + ggtitle("Student's attitude versus exam points")
+
+# draw the plot!
+
+p4
+```
+
+## Exploring data frame
+
+```{r}
+pairs(Data2[-1])
+
+
+# access the GGally and ggplot2 libraries
+library(GGally)
+library(ggplot2)
+
+# create a more advanced plot matrix with ggpairs()
+
+p <- ggpairs(Data2, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+
+#draw the plot
+
+p
+
+```
+**Interpretation of the Correlation Plot above**
+*Here, in the above plot, the variable names are displayed on the outer edges of the matrix. The boxes along the diagonals display the density plot for each variable whereas the boxes in the lower-left corner display the scatterplot between each -pair of variables. The boxes in the upper right corner display the Pearson correlation coefficient between each variable.*
+
+*The Pearson correlation gives us the measure of the linear relationship between two variables. It has a value between -1 to 1, where a value of -1 signifies a total negative linear correlation, 0 signifies no correlation, and + 1 signifies a total positive correlation.*
+
+*We can see That there is no linear regression between deep with points and age. Besides surf doesn't have a linear relation with any of the other variables as but the relation is although not a total negative yet linearity is missing between them*
+
+## Simple regression
+
+```{r}
+# a scatter plot of points versus attitude
+library(ggplot2)
+qplot(attitude, points, data = Data2) + geom_smooth(method = "lm")
+
+# fit a linear model
+my_model <- lm(points ~ attitude, data = Data2)
+
+# print out a summary of the model
+summary(my_model)
+```
+**Interpretations**
+*The p-value suggests that there there is a significant relation between points and attitude*
+
+## Multiple regression
+
+```{r}
+library(GGally)
+library(ggplot2)
+# create an plot matrix with ggpairs()
+ggpairs(Data2, lower = list(combo = wrap("facethist", bins = 20)))
+
+# create a regression model with multiple explanatory variables
+my_model2 <- lm(points ~ attitude + stra, data = Data2)
+
+# print out a summary of the model
+summary(my_model2)
+
+#adding third variable as surf
+
+my_model3 <- lm(points ~ attitude + stra + surf, data = Data2)
+
+#printing out a summary of the model
+summary(my_model3)
+```
+**Interpretation of multiple regression**
+*There is a significant increase in points with 1 unit increase in attitude. With 1 unit increase in attitude there is not a significant increase in stra and surf*
+
+##Graphical model validation
+
+```{r}
+# create a regression model with multiple explanatory variables
+my_model2 <- lm(points ~ attitude + stra, data = Data2)
+
+# draw diagnostic plots using the plot() function. Choose the plots 1, 2 and 5
+
+plot(my_model2, c(1,2,5))
+```
+**Interpretation of residual models**
+
+**1.Residuals vs Fitted**
+*Here we see that linearity seems to hold reasonably well, as the red line is close to the dashed line. We can also note the heteroskedasticity: as we move to the right on the x-axis, the spread of the residuals seems to be increasing. Finally, points 145, 56, and 35 may be outliers, with large residual values. Let’s look at another data set*
+
+**2. Normal QQ-plot**
+*In the diagram below, the quantile values of the standard normal distribution are plotted on the x-axis in the Normal QQ plot, and the corresponding quantile values of the dataset are plotted on the y-axis. You can see that the points fall close to the 45-degree reference line. In the above plot we can see that although most of the observations are equally distributed and falls on the reference line but in the beginning and in the end of the plot, there are some discrepancies, especially with points 145, 35 and 56 in the beginning.*
+
+**3. Residuals vs Leverage plot**
+*We’re looking at how the spread of standardized residuals changes as the leverage, or sensitivity of the fitted \hat{y}_i to a change in y_i, increases. Second, points with high leverage may be influential:For this we can look at Cook’s distance, which measures the effect of deleting a point on the combined parameter vector. Cook’s distance is the dotted red line here, and points outside the dotted line have high influence. In this case there are no such influential points*
+
+
+## Making predictions
+
+```{r}
+# Create model object m
+m <- lm(points ~ attitude, data = Data2)
+
+# print out a summary of the model
+summary(m)
+
+
+# New observations
+new_attitudes <- c("Mia" = 3.8, "Mike"= 4.4, "Riikka" = 2.2, "Pekka" = 2.9)
+new_data <- data.frame(attitude = new_attitudes)
+
+# Print out the new data
+summary(new_data)
+
+
+# Predict the new students exam points based on attitude
+predict(m, newdata = new_data) 
+```
+**Interpreation**
+*The predict functions tells that for the new data and new students as well there is a substantial increase in one unit of attitude with increase in one unit of points.
