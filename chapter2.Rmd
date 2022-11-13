@@ -1,4 +1,4 @@
-# Chapter 2. Multiple regression Analysis
+# Chapter. Multiple regression Analysis
 
 *Describe the work you have done this week and summarize your learning.*
 
