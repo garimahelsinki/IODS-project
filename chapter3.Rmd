@@ -246,3 +246,4 @@ cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
 cv$delta[1]
 ```
 
+
