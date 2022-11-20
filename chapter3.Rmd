@@ -1,0 +1,248 @@
+# Chapter. Logistic regression Analysis
+
+```{r}
+date()
+```
+**About the Data set**
+
+*The data were collected for this paper:*
+*P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7.*
+
+*The secondary student achievement of two Portuguese schools is the focus of these data. The data variables were gathered utilizing school reports and surveys and include student grades, demographic, social, and school-related features. Regarding the performance in two different courses, Mathematics (mat) and Portuguese language(por), two datasets are supplied . The two datasets were modeled in [Cortez and Silva, 2008] under binary/five-level classification and regression tasks. Please take note that the target attribute G3 strongly correlates with the traits G2 and G1. This is due to the fact that G3 is the final year grade (given at the third period), but G1 and G2 are the grades for the first and second periods, respectively.*
+
+## Reading data
+
+```{r}
+setwd("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data")
+
+library(readr)
+alc <- read_csv("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/alc.csv",show_col_types = FALSE)
+alc
+```
+**Observation**
+*The data set, named here as "alc", has 370 observations of 35 variables*
+
+## Visualising data through plots
+
+```{r}
+# access the tidyverse libraries tidyr, dplyr, ggplot2
+library(tidyr); library(dplyr); library(ggplot2)
+
+# glimpse at the alc data
+glimpse(alc)
+
+# use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
+gather(alc) %>% glimpse
+
+# it may help to take a closer look by View() and browse the data
+gather(alc) %>% View
+
+# draw a bar plot of each variable
+gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+
+```
+*Above is the plot of each variable in the data set and represent how each variable is distributed*
+
+## Summarising by group
+```{r}
+# access the tidyverse libraries dplyr and ggplot2
+library(dplyr); library(ggplot2)
+
+# produce summary statistics by group
+alc %>% group_by(sex) %>% summarise(count = n())
+
+alc %>% group_by(sex, high_use) %>% summarise(count = n(), mean_grade = mean(G3))
+```
+**Observation**
+
+*Above is the summary of how high alcohol usage effect grades in Female and Male student.The observations are:*
+
+*1. It is being observed that there are more number of female and male students who consumption of alcohol is not high*
+*2. The high alcohol consumption has interestingly not effected the grades in females as much as it does for males. Also, in females, high alcohol consumption has not effected the grades negatively.*
+*3. In male students, the effect of high alcohol consumption has been negative with their mean grade decreasing by 2 units*
+
+## Visualising through box plots
+
+```{r}
+# Work with the exercise in this chunk, step-by-step. Fix the R code!
+library(ggplot2)
+
+# initialize a plot of high_use and G3
+g1 <- ggplot(alc, aes(x = high_use, y = G3))
+
+# define the plot as a boxplot and draw it
+g1 + geom_boxplot() + ylab("grade") + aes(col = sex)
+
+# initialize a plot of high_use and absences
+g2 <- ggplot(alc, aes(x = high_use, y = absences))
+
+# define the plot as a box plot and draw it
+g2 + geom_boxplot() + ylab("absences") + aes(col = sex) + ggtitle("Student absences by alcohol consumption and sex")
+```
+**Observation of the above plot**
+
+*Through the above plot, we can visualize that high alcohol consumption affect absenteeism for both males and females, comparatively less for males.*
+*We can see that more number of students whose alcohol consumption is high have been absent/missing their classes.*
+*We can also see that even in those whose alcohol consumption has not been high, females were more absent than males and for those whose consumption is high, the absenteeism increases more significantly*
+
+## Logistic Regression Model
+
+**About Logistic regression model**
+
+*Logistic regression is used to predict the class (or category) based on one or multiple predictor variables (x). It is used to model a binary outcome, that is a variable, which can have only two possible values*
+
+*We will now use Logistic regression model to identify factors related to higher than average student alcohol consumption.*
+
+```{r}
+# find the model with glm()
+m <- glm(high_use ~ failures + absences, data = alc, family = "binomial")
+
+# print out a summary of the model
+summary(m)
+
+# print out the coefficients of the model
+coef(m)
+```
+**Observation**
+*We can see that p-value for both, failure and absences, is less than alpha(0.5) which means that with increase in one unit of alcohol consumption, there is a significant rise in failures and subsequently on absenteeism*
+*There we 4 Fisher scoring iterations before the process of fitting the model stopped and output the results.*
+*In this case, our intercept is -1.38589606. We can say that because the mean of responses is less than 0, it matches with our p-value result observation being less than the alpha*
+
+#Plot visualization
+
+```{r}
+p1 <- alc %>% 
+  filter(!is.na(high_use) & !is.na(absences)) %>%
+  ggplot(aes(x = absences, fill = high_use)) + 
+  geom_bar() + coord_flip() +
+  theme(legend.position = "none")
+p2 <- alc %>% 
+  filter(!is.na(high_use) & !is.na(absences)) %>%
+  ggplot(aes(x = absences, fill = high_use)) + 
+  geom_bar(position = "fill") + coord_flip() +
+  ylab("proportion")
+library(patchwork)
+p1 + p2
+```
+
+## From coefficients to odds ratios(OR)
+
+```{r}
+# find the model with glm()
+m <- glm(high_use ~ failures + absences + sex, data = alc, family = "binomial")
+
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp
+
+# compute confidence intervals (CI)
+CI <- confint(m) %>% exp
+
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```
+**Observation**
+*The OR value suggest that when one unit of alcohol consumption (high_use) increases, the odds of failure increases by 81% and with one unit increase in failure, odds of absenteeism rises by 9% and for males the odds increases by 171%*
+
+#Plot Visualisation by providing Confidence Intervals
+```{r}
+library(finalfit)
+dependent <- "high_use"
+explanatory <- c("failures", "absences", "sex")
+alc %>% 
+  or_plot(dependent, explanatory,
+          breaks = c(0.5, 1, 2, 5),
+          table_text_size = 3.5,
+          title_text_size = 16)
+```
+
+## Binary prediction (1)
+
+```{r}
+# fit the model
+m <- glm(high_use ~ failures + absences + sex, data = alc, family = "binomial")
+
+# predict() the probability of high_use
+probabilities <- predict(m, type = "response")
+
+library(dplyr)
+# add the predicted probabilities to 'alc'
+alc <- mutate(alc, probability = probabilities)
+
+alc <- mutate(alc, prediction = probability > 0.5)
+
+# use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction = high_use)
+
+# see the last ten original classes, predicted probabilities, and class predictions
+select(alc, failures, absences, sex, high_use, probability, prediction) %>% tail(10)
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction)
+
+```
+**Observation**
+*The model has predicted False as 259 times false and 0 times true*
+*The model has predicted True as 0 times False and 111 time true*
+*Confusion matrix reveal that the data set has  259 cases of false and 111 cases of true in high_use*
+*The accuracy rate is 100%*
+
+```{r}
+# rerunning some codes to avoid errors
+
+m <- glm(high_use ~ sex + failures + absences, data = alc, family = "binomial")
+alc <- mutate(alc, probability = predict(m, type = "response"))
+alc <- mutate(alc, prediction = probability > 0.5)
+```
+
+
+## Binary prediction (2)
+
+```{r}
+# access dplyr and ggplot2
+library(dplyr); library(ggplot2)
+
+# initialize a plot of 'high_use' versus 'probability' in 'alc'
+g <- ggplot(alc, aes(x = probability, y = high_use))
+
+# define the geom as points and draw the plot
+g + geom_point() + aes(col = prediction)
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
+
+```
+**Observation**
+*Accuracy rate is 1 i.e., 100%*
+
+## Accuracy and loss functions
+
+```{r}
+# define a loss function (mean prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# call loss_func to compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, alc$probability)
+
+```
+## Cross validation
+```{r}
+# define a loss function (average prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, prob = alc$probability)
+
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]
+```
+

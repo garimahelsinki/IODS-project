@@ -76,7 +76,7 @@ p
 
 *The Pearson correlation gives us the measure of the linear relationship between two variables. It has a value between -1 to 1, where a value of -1 signifies a total negative linear correlation, 0 signifies no correlation, and + 1 signifies a total positive correlation.*
 
-*We can see That there is no linear regression between deep with points and age. Besides surf doesn't have a linear relation with any of the other variables as but the relation is although not a total negative yet linearity is missing between them*
+*We can see That there is no correlation between deep with points and age. Besides surf doesn't have a linear relation with any of the other variables as but the relation is although not a total negative yet linearity is missing between them*
 
 ## Simple regression
 
