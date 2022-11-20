@@ -83,6 +83,8 @@ colnames(learning2014)[2] <- "age"
 # change the name of "Points" to "points"
 colnames(learning2014)[7] <- "points"
 
+#break
+
 # print out the new column names of the data
 colnames(learning2014)
 
