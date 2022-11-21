@@ -450,7 +450,7 @@ visualising different plots</em></p>
 <pre class="r"><code># This is a so-called &quot;R chunk&quot; where you can write R code.
 
 date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 21 23:20:38 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 21 23:25:13 2022&quot;</code></pre>
 <p>The text continues here.</p>
 <hr />
 </div>
@@ -466,7 +466,7 @@ writing and reading R code as well as statistical methods.</li>
 advanced methods you are using.</li>
 </ul>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 21 23:20:38 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 21 23:25:14 2022&quot;</code></pre>
 <p>Here we go again…</p>
 <pre class="r"><code>setwd(&quot;C:/Users/Aadhar/Desktop/Uni/Open Data Science/data&quot;)
 
@@ -736,7 +736,7 @@ one unit of attitude with increase in one unit of points.</p>
 <div id="chapter.-logistic-regression-analysis" class="section level1">
 <h1>Chapter. Logistic regression Analysis</h1>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 21 23:20:57 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 21 23:25:32 2022&quot;</code></pre>
 <p><strong>About the Data set</strong></p>
 <p><em>The data was collected for the following paper:</em> <em>P.
 Cortez and A. Silva. Using Data Mining to Predict Secondary School
@@ -757,7 +757,7 @@ the first and second periods, respectively.</em></p>
 <p>Attributes for both student-mat.csv (Math course) and student-por.csv
 (Portuguese language course) datasets:</p>
 <p>1 school - student’s school (binary: ‘GP’ - Gabriel Pereira or ‘MS’ -
-Mousinho da Silveira)</p>
+Mousinho da Silveira )</p>
 <p>2 sex - student’s sex (binary: ‘F’ - female or ‘M’ - male)</p>
 <p>3 age - student’s age (numeric: from 15 to 22)</p>
 <p>4 address - student’s home address type (binary: ‘U’ - urban or ‘R’ -
@@ -1204,7 +1204,7 @@ cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
 
 # average number of wrong predictions in the cross validation
 cv$delta[1]</code></pre>
-<pre><code>## [1] 0.3027027</code></pre>
+<pre><code>## [1] 0.3081081</code></pre>
 <p><strong>Observation</strong> <em>Since the lower value means better
 this gives a comparatively poor result than the exercise result which
 was 0.26</em></p>
@@ -1261,7 +1261,7 @@ alc &lt;- mutate(alc, prediction_2 = probability_2 &gt; 0.5)
 # Recalculation of cross-validation and print the average number of wrong predictions.
 cv_2 &lt;- cv.glm(data = alc, cost = loss_func, glmfit = n, K = 10)
 cv_2$delta[1]</code></pre>
-<pre><code>## [1] 0.2891892</code></pre>
+<pre><code>## [1] 0.2837838</code></pre>
 <p><strong>Interpretation</strong> <em>The result of 0.2891892 is much
 better than the 0.3108108 which was the result of original
 model</em></p>
