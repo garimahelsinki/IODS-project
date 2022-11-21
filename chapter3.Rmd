@@ -51,13 +51,13 @@ gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_b
 **famrel** *- quality of family relationships (numeric: from 1 - very bad to 5 - excellent)*
 **final grade** *numeric: from 0 to 20, output target*
 
-*The variable 'schoolsup' will help me to understand the impact of high alcohol use on how much support the student need in their studies* 
+*The variable 'schoolsup' will help me to understand the impact of high alcohol use on how much support the student need in their studies.*
 **My hypothesis** *is that with increased alcohol use, there will be increase the support needed*
 
-*With the help of the variable 'higher', I want to study whether the willingness to pursue higher studies changes between those who consume more alcohol than others*
+*With the help of the variable 'higher', I want to study whether the willingness to pursue higher studies changes between those who consume more alcohol than others.*
 **My hypothesis** *is that there will be an effect but not so significant on desire to pursue higher education with increased alcohol consumption*
 
-*the 'famrel' variable will help me understand the effect of high alcohol usage on the relationship with family*
+*the 'famrel' variable will help me understand the effect of high alcohol usage on the relationship with family.*
 **My hypothesis** *is that there will be a strain in relationship with family with high consumption*
 
 *'final grade' variable with help me see if there is change in final grades of the student with higher usage as compared to lower usage*
@@ -230,7 +230,7 @@ alc <- mutate(alc, prediction = probability > 0.5)
 ```
 
 
-# Binary prediction (2)
+#Binary prediction (2)
 
 ```{r}
 
