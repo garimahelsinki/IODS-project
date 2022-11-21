@@ -313,4 +313,30 @@ cv$delta[1]
 **Observation**
 *Since the lower value means better this gives a comparatively poor result than the exercise result which was 0.26*
 
+*To Improve the model,The model's explanatory variables can be included, and the cross-validation can then be recalculated. For this I am adding the variable sex as explanatory variable as not only it relates strongly with target variable but also it will be interesting to see it from the point of view of gender*
+
+```{r}
+n <- glm(high_use ~ schoolsup + higher + famrel + sex, data = alc, family = "binomial")
+
+# Summary of the model
+summary(n)
+
+#Calculations of the odds of ratios and the confidence interval
+cbind(exp(coef(n)), exp(confint(n)))
+```
+```{r}
+# Prediction of the probability
+probabilities_2 <- predict(n, type = "response")
+# Probabilities to alc
+alc <- mutate(alc, probability_2 = probabilities_2)
+# Calculate a logical high use value based on probabilities.
+alc <- mutate(alc, prediction_2 = probability_2 > 0.5)
+# Recalculation of cross-validation and print the average number of wrong predictions.
+cv_2 <- cv.glm(data = alc, cost = loss_func, glmfit = n, K = 10)
+cv_2$delta[1]
+```
+
+**Interpretation**
+*The result of 0.2891892 is much better than the 0.3108108 which was the result of original model*
+
 **____End of Chapter___**
