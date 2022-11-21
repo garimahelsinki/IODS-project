@@ -5,7 +5,7 @@ date()
 ```
 **About the Data set**
 
-*The data were collected for this paper:*
+*The data was collected for the following paper:*
 *P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7.*
 
 *The secondary student achievement of two Portuguese schools is the focus of these data. The data variables were gathered utilizing school reports and surveys and include student grades, demographic, social, and school-related features. Regarding the performance in two different courses, Mathematics (mat) and Portuguese language(por), two datasets are supplied . The two datasets were modeled in [Cortez and Silva, 2008] under binary/five-level classification and regression tasks. Please take note that the target attribute G3 strongly correlates with the traits G2 and G1. This is due to the fact that G3 is the final year grade (given at the third period), but G1 and G2 are the grades for the first and second periods, respectively.*
@@ -43,47 +43,86 @@ gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_b
 ```
 *Above is the plot of each variable in the data set and represent how each variable is distributed*
 
-## Summarising by group
+## About my 4 chosen variables
+
+*I am choosing the following variable*
+**schoolsup** *- extra educational support(binary: yes or no)*
+**higher** *- wants to take higher education (binary: yes or no)*
+**famrel** *- quality of family relationships (numeric: from 1 - very bad to 5 - excellent)*
+**final grade** *numeric: from 0 to 20, output target*
+
+*The variable 'schoolsup' will help me to understand the impact of high alcohol use on how much support the student need in their studies* 
+**My hypothesis** *is that with increased alcohol use, there will be increase the support needed*
+
+*With the help of the variable 'higher', I want to study whether the willingness to pursue higher studies changes between those who consume more alcohol than others*
+**My hypothesis** *is that there will be an effect but not so significant on desire to pursue higher education with increased alcohol consumption*
+
+*the 'famrel' variable will help me understand the effect of high alcohol usage on the relationship with family*
+**My hypothesis** *is that there will be a strain in relationship with family with high consumption*
+
+*'final grade' variable with help me see if there is change in final grades of the student with higher usage as compared to lower usage*
+**My hypothesis** *is that the marks will be negatively effected with high consumption of alcohol*
+
+#Exploring the chosen variables through visualization
+
+#1.Exploring high_use with schoolsup i.e., extra support need from school
+
 ```{r}
+
 # access the tidyverse libraries dplyr and ggplot2
 library(dplyr); library(ggplot2)
 
-# produce summary statistics by group
-alc %>% group_by(sex) %>% summarise(count = n())
+g1 <- ggplot(alc, aes(x = high_use))
 
-alc %>% group_by(sex, high_use) %>% summarise(count = n(), mean_grade = mean(G3))
+g1 + geom_bar() + facet_wrap("schoolsup") + ggtitle("Effect of alcohol consumption on Educational support required") + xlab("High alcohol usage") + aes(fill = high_use)
 ```
+
 **Observation**
+*From the above visualization we can observe that, there are comparatively less students whose alcohol usage is high and requires extra educational support. Interestingly, students for those alcohol usage isn't high, they seek more support from the school when compared to those with high usage.*
+*My hypothesis stands false for this which is very interesting for me*
 
-*Above is the summary of how high alcohol usage effect grades in Female and Male student.The observations are:*
-
-*1. It is being observed that there are more number of female and male students who consumption of alcohol is not high*
-*2. The high alcohol consumption has interestingly not effected the grades in females as much as it does for males. Also, in females, high alcohol consumption has not effected the grades negatively.*
-*3. In male students, the effect of high alcohol consumption has been negative with their mean grade decreasing by 2 units*
-
-## Visualising through box plots
+#2. Exploring high_use with higher i.e. desire for higher eduation
 
 ```{r}
-# Work with the exercise in this chunk, step-by-step. Fix the R code!
-library(ggplot2)
+g2 <- ggplot(alc, aes(x = high_use))
 
-# initialize a plot of high_use and G3
-g1 <- ggplot(alc, aes(x = high_use, y = G3))
-
-# define the plot as a boxplot and draw it
-g1 + geom_boxplot() + ylab("grade") + aes(col = sex)
-
-# initialize a plot of high_use and absences
-g2 <- ggplot(alc, aes(x = high_use, y = absences))
-
-# define the plot as a box plot and draw it
-g2 + geom_boxplot() + ylab("absences") + aes(col = sex) + ggtitle("Student absences by alcohol consumption and sex")
+g2 + geom_bar() + facet_wrap("higher") + ggtitle("Desire to take higher education vs high alcohol usage") + xlab("High alcohol usage") + aes(fill = high_use)
 ```
-**Observation of the above plot**
 
-*Through the above plot, we can visualize that high alcohol consumption affect absenteeism for both males and females, comparatively less for males.*
-*We can see that more number of students whose alcohol consumption is high have been absent/missing their classes.*
-*We can also see that even in those whose alcohol consumption has not been high, females were more absent than males and for those whose consumption is high, the absenteeism increases more significantly*
+**Observation**
+*The above variable stands true to my hypothesis that no matter how much is the consumption for alcohol, the desire for higher education doesn't go away. Lets take a closer look below*
+
+#Summarising to see results see more clearly
+
+```{r}
+alc %>% group_by(higher, high_use) %>% summarise(count = n())
+```
+
+**Observation**
+*There are only 16 students that do not desire to pursue higher education out of which 9 were with high usage. This means that there is no significant relationship between alcohol usage and desire to study further, which seems logical to me as food choices can be temporary but the choice for further studies is a thought through decision for most people.*
+
+#3. Exploring high_use and its effect on famrel i.e., family relationship
+
+```{r}
+g3 <- ggplot(alc, aes(x = high_use))
+
+g3 + geom_bar() + facet_wrap("famrel") + ggtitle("family relationships (1-5) vs high alcohol usage") + xlab("High alcohol usage") + aes(fill = high_use)
+```
+
+**Observation**
+*Family relationship for most students have been on the positive side without any significant change with high or low usage of alcohol. Infact in the category of bad relationship, the proportion of those with low usage is higher but that is true as there are more number of students with low usage as compared to high usage in general.*
+*Therefore, my hypothesis of effect being negative stands false*
+
+#4. Exploring high_use and its effect on G3 i,e., Final Grades of student
+
+```{r}
+g4 <- ggplot(alc, aes(x = high_use, y = G3))
+
+g4 + geom_boxplot() + ggtitle("Effect of high alcohol usage on Final grades") + xlab("High alcohol usage") + ylab("Final grade")+ aes(col = high_use)
+```
+**Observation**
+*We can clearly visualize that the students with high consumption have comparatively lower grades than those with low consumption.*
+*The hypothesis for the variable stands true that high alcohol consumption has negatively effected the grades of students*
 
 ## Logistic Regression Model
 
@@ -95,7 +134,7 @@ g2 + geom_boxplot() + ylab("absences") + aes(col = sex) + ggtitle("Student absen
 
 ```{r}
 # find the model with glm()
-m <- glm(high_use ~ failures + absences, data = alc, family = "binomial")
+m <- glm(high_use ~ schoolsup + higher + famrel + G3, data = alc, family = "binomial")
 
 # print out a summary of the model
 summary(m)
@@ -104,32 +143,18 @@ summary(m)
 coef(m)
 ```
 **Observation**
-*We can see that p-value for both, failure and absences, is less than alpha(0.5) which means that with increase in one unit of alcohol consumption, there is a significant rise in failures and subsequently on absenteeism*
+*We can see that p-value for all the variables, is less than alpha(0.5) which means that with increase in one unit of alcohol consumption, there is a significant rise in support need from school and subsequently similar result can be seen for other variables i.e., there is significant rise in 'higheryes', 'famrel', and 'G3' respectively* 
+
 *There we 4 Fisher scoring iterations before the process of fitting the model stopped and output the results.*
-*In this case, our intercept is -1.38589606. We can say that because the mean of responses is less than 0, it matches with our p-value result observation being less than the alpha*
 
-#Plot visualization
+*In this case, our intercept for different variable is less than 0, it matches with our p-value results observation being less than the alpha*
 
-```{r}
-p1 <- alc %>% 
-  filter(!is.na(high_use) & !is.na(absences)) %>%
-  ggplot(aes(x = absences, fill = high_use)) + 
-  geom_bar() + coord_flip() +
-  theme(legend.position = "none")
-p2 <- alc %>% 
-  filter(!is.na(high_use) & !is.na(absences)) %>%
-  ggplot(aes(x = absences, fill = high_use)) + 
-  geom_bar(position = "fill") + coord_flip() +
-  ylab("proportion")
-library(patchwork)
-p1 + p2
-```
 
 ## From coefficients to odds ratios(OR)
 
 ```{r}
 # find the model with glm()
-m <- glm(high_use ~ failures + absences + sex, data = alc, family = "binomial")
+m <- glm(high_use ~ schoolsup + higher + famrel + G3, data = alc, family = "binomial")
 
 # compute odds ratios (OR)
 OR <- coef(m) %>% exp
@@ -141,13 +166,14 @@ CI <- confint(m) %>% exp
 cbind(OR, CI)
 ```
 **Observation**
-*The OR value suggest that when one unit of alcohol consumption (high_use) increases, the odds of failure increases by 81% and with one unit increase in failure, odds of absenteeism rises by 9% and for males the odds increases by 171%*
+*The OR value suggest that when one unit of alcohol consumption (high_use) increases, the odds of educational support decreases 21% and with one unit increase in schoolsup, odds of higher education decreases by 55% and odds of good fam decreases by 24% and by 8% for grades*
+*The Odds ratio of The final grade is 1:1:0:0*
 
 #Plot Visualisation by providing Confidence Intervals
 ```{r}
 library(finalfit)
 dependent <- "high_use"
-explanatory <- c("failures", "absences", "sex")
+explanatory <- c("schoolsup", "higher", "famrel", "G3")
 alc %>% 
   or_plot(dependent, explanatory,
           breaks = c(0.5, 1, 2, 5),
@@ -155,64 +181,71 @@ alc %>%
           title_text_size = 16)
 ```
 
-## Binary prediction (1)
+*The results of the above plot matches the observations*
+
+## Explore the predictive power of the model with the significant variables
+
+#Binary prediction (1)
 
 ```{r}
 # fit the model
-m <- glm(high_use ~ failures + absences + sex, data = alc, family = "binomial")
+m <- glm(high_use ~ schoolsup + higher + famrel + G3, data = alc, family = "binomial")
+m1 <- glm(high_use ~ famrel + G3, data = alc, family = "binomial")
 
 # predict() the probability of high_use
 probabilities <- predict(m, type = "response")
+prob2 <- predict(m1, type = "response")
 
 library(dplyr)
+
 # add the predicted probabilities to 'alc'
 alc <- mutate(alc, probability = probabilities)
+alc <- mutate(alc, prob2 = prob2)
 
 alc <- mutate(alc, prediction = probability > 0.5)
 
 # use the probabilities to make a prediction of high_use
-alc <- mutate(alc, prediction = high_use)
+alc <- mutate(alc, prob3 = prob2 > 0.5)
 
 # see the last ten original classes, predicted probabilities, and class predictions
-select(alc, failures, absences, sex, high_use, probability, prediction) %>% tail(10)
+select(alc, schoolsup, higher, famrel, G3, high_use, probability, prediction) %>% tail(10)
 
 # tabulate the target variable versus the predictions
 table(high_use = alc$high_use, prediction = alc$prediction)
 
 ```
 **Observation**
-*The model has predicted False as 259 times false and 0 times true*
-*The model has predicted True as 0 times False and 111 time true*
-*Confusion matrix reveal that the data set has  259 cases of false and 111 cases of true in high_use*
-*The accuracy rate is 100%*
+*The model has predicted False as 251/259*
+*The model has predicted True as 8/111*
+*The sensitivity of the model is 8 which is not so good and specificity is 251 which is much better*
+
+*In the cross table, 8 times the prediction is heavy alcohol consumption when the variable gets a value corresponding to no heavy alcohol consumption. Similarly, 103 times the prediction is no high alcohol consumption when the variable gets a value corresponding to high alcohol consumption.*
 
 ```{r}
 # rerunning some codes to avoid errors
 
-m <- glm(high_use ~ sex + failures + absences, data = alc, family = "binomial")
+m <- glm(high_use ~ schoolsup + higher + famrel + G3, data = alc, family = "binomial")
 alc <- mutate(alc, probability = predict(m, type = "response"))
 alc <- mutate(alc, prediction = probability > 0.5)
 ```
 
 
-## Binary prediction (2)
+# Binary prediction (2)
 
 ```{r}
-# access dplyr and ggplot2
-library(dplyr); library(ggplot2)
 
 # initialize a plot of 'high_use' versus 'probability' in 'alc'
 g <- ggplot(alc, aes(x = probability, y = high_use))
 
 # define the geom as points and draw the plot
-g + geom_point() + aes(col = prediction)
+g + geom_point() + aes(col = probabilities)
 
 # tabulate the target variable versus the predictions
 table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
 
 ```
 **Observation**
-*Accuracy rate is 1 i.e., 100%*
+*The table above shows that, according to the forecast, there are about 95 percent of all people who do not drink a lot of alcohol. There are approximately 70 percent of all persons who do not drink much alcohol. Note again that the forecast differs from the values of the variable.*
 
 ## Accuracy and loss functions
 
@@ -227,23 +260,22 @@ loss_func <- function(class, prob) {
 loss_func(class = alc$high_use, alc$probability)
 
 ```
-## Cross validation
-```{r}
-# define a loss function (average prediction error)
-loss_func <- function(class, prob) {
-  n_wrong <- abs(class - prob) > 0.5
-  mean(n_wrong)
-}
+**Observation**
+*The loss function gave the prediction error of 0.3*
 
-# compute the average number of wrong predictions in the (training) data
-loss_func(class = alc$high_use, prob = alc$probability)
+## K-fold Cross validation
+```{r}
 
 # K-fold cross-validation
 library(boot)
-cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
+
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
+
 
 # average number of wrong predictions in the cross validation
 cv$delta[1]
 ```
+**Observation**
+*Since the lower value means better this gives a comparatively poor result than the exercise result which was 0.26*
 
-
+**____End of Chapter___**
