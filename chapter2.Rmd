@@ -161,6 +161,7 @@ summary(new_data)
 # Predict the new students exam points based on attitude
 predict(m, newdata = new_data) 
 ```
+
 **Interpreation**
 *The predict functions tells that for the new data and new students as well there is a substantial increase in one unit of attitude with increase in one unit of points.
 
