@@ -273,7 +273,7 @@ alc <- mutate(alc, prediction = probability > 0.5)
 g <- ggplot(alc, aes(x = probability, y = high_use))
 
 # define the geom as points and draw the plot
-g + geom_point() + aes(col = probabilities)
+g + geom_point() + aes(col = probability)
 
 # tabulate the target variable versus the predictions
 table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
