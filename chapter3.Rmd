@@ -1,4 +1,4 @@
-# Chapter. Logistic regression Analysis
+# Chapter 3: Logistic regression Analysis
 
 ```{r}
 date()

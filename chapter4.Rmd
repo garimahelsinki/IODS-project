@@ -1,4 +1,4 @@
-# Chapter: Clustering and classification
+# Chapter 4: Clustering and classification
 
 ```{r}
 date()
