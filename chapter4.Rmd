@@ -1,5 +1,8 @@
-Chapter: Clustering and classification
----
+# Chapter: Clustering and classification
+
+```{r}
+date()
+```
 
 **About the Data set**
 
@@ -40,7 +43,7 @@ Source
 *Belsley D.A., Kuh, E. and Welsch, R.E. (1980) Regression Diagnostics. Identifying Influential Data and Sources of Collinearity. New York: Wiley.*
 
 
-##Loading the Data Set, Installing package and Exploring Data set
+## Loading the Data Set, Installing package and Exploring Data set
 
 ```{r}
 #Loading required libraries for the Exercise
@@ -66,7 +69,7 @@ summary(Boston)
 *The variables chas and rad are integers whiles others are numerical.*
 *From the function dimensions, from the Min. and Max range we can see that the variable distribution is skewed except for the variables rm, and medv.*
 
-##Graphical Distribution and summary of variables
+## Graphical Distribution and summary of variables
 
 ```{r}
 # plot matrix of the variables
@@ -86,7 +89,7 @@ corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d"
 
 **Correlation Plot:** *According to the Correlation plot, we can say that there many variables with high positive correlation for example the variables 'rad' and 'tax' have the highest positive correlation among all the variables. On the other hand, we can also see strong negative correlation between many variable, highest negative correlation being among the variable like 'lstat' and 'medv', 'age' and 'dis', 'nox' and 'dis', and, 'indus' and 'dis'. Therefore, we can also say that 'dis' (distance) has the most highest negative correlation among all the other variables*
 
-##Standardization of Data Set and Categorization of Variable
+## Standardization of Data Set and Categorization of Variable
 
 1. Standardization of data Set
 *It is the process through which we take the mean of the relevant columns, subtract them, then divide the result by the standard deviation.*
@@ -129,7 +132,7 @@ table(boston_scaled$crim)
 **Observation**
 *We have now created a categorical variable(previously continuous) and changed the name from crim to crime which has now been added as a separate variable in the boston_scaled data set which has 127 observation for low crime, 126 for medium to low and medium to high crime and 127 for high crime*
 
-##Divide the dataset to train and test sets.
+## Divide the dataset to train and test sets.
 
 *When we want to use a statistical method to predict something, it is important to have data to test how well the predictions fit. Splitting the original data to test and train sets allows us to check how well our model works.  The training of the model is done with the train set and prediction on new data is done with the test set. This way you have true classes / labels for the test data, and you can calculate how well the model performed in prediction.*
 
@@ -158,7 +161,7 @@ test <- dplyr::select(test, -crime)
 ```
 
 
-##Linear Discriminant Analysis on the train set
+## Linear Discriminant Analysis on the train set
 
 *LDA is done to find the linear combination among the variable which separates the classes of target variables* *For this analysis, we will use  'Crime' as the target variable*
 
@@ -189,10 +192,10 @@ lda.arrows(lda.fit, myscale = 1)
 ```
 
 **Observation**
-*The proportion of trace tells us that LD1 explains variance up-to 96.27%, LD2 does it up to 2.84% and LD3 does it for below 1% i.e., at around 0.89%.*
+*The proportion of trace tells us that LD1 explains variance up-to 95%, LD2 does it up to 3.58% and LD3 does it for 1.07%.*
 *Through the plot we can say that the target variable crime is clearly separated, and the variable accessibility to 'rad' is optimal as seen through the arrow.*
 
-##Prediction and Cross tabulation
+## Prediction and Cross tabulation
 
 **(Please Note:***The saving of crime categories and removal of the categorical crime variable from the test data set can be found just before the start of LDA exercise in the Divide the data set to train and test sets exercise)*
 
@@ -207,7 +210,7 @@ table(correct = correct_classes, predicted = lda.pred$class)
 **Observation**
 *The cross tabulation suggests that the model predicts the 'high' crime rate quite well. There are 102 total observation and The majority of the predicted values are predicted as correct values for the same category making the model usable for rough predictions.* 
 
-##Reload and standardize the Boston dataset 
+## Reload and standardize the Boston dataset 
 
 ```{r}
 # Reload Boston dataset.
@@ -220,7 +223,7 @@ boston_scaled <- scale(Boston)
 boston_scaled <- as.data.frame(boston_scaled)
 ```
 
-##Calculate the distance between Observations, K means clustering and visualisation
+## Calculate the distance between Observations, K means clustering and visualisation
 
 ```{r}
 # Calculate the Euclidean distances between observations.
@@ -271,7 +274,7 @@ pairs(boston_scaled[6:10], col = km$cluster)
 **Observation**
 *We can see that because of our previous observation was of 3 clusters and optimal is 2, there isnt much difference but going by the results, 'two' seems to be the optimal number for clustering the data, when the method chosen is Euclidean*
 
-##Super Bonus: Create a 3-D plot
+## Super Bonus: Create a 3-D plot
 
 ```{r}
 model_predictors <- dplyr::select(train, -crime)
@@ -300,3 +303,5 @@ plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, 
 **Observation**
 
 *Through the above super cool 3D plots, my observation is that the k-means clustering works better. In the crime plot, it was hard to establish which variables are falling where as some of them got a bit submerged in each other.*
+
+**____End of chapter___**
