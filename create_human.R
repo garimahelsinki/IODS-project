@@ -45,38 +45,56 @@ head(human)
 view(human)
 
 ## Saving the data as human
-write.csv(human,"C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/human.csv", row.names = FALSE)
+#write.csv(human,"C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/human.csv", row.names = FALSE)
 
 ##Data Wrangling Assignment 5
 ##01-12-2022
 
 #Loading human data 
-setwd("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data")
 
-library(readr)
-human <- read_csv("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/human.csv",show_col_types = FALSE)
+# Change GNI variable to numeric.
+# access the stringr package
+library(stringr)
 
-#Mutate the data: transforming GNI to numeric
+# look at the structure of the gross national income column in 'human'
+str(human$GNIC)
 
-human$GNIC <- gsub(",","", human$GNIC) %>% as.numeric()
+# remove the commas from GNI and print out a numeric version of it
+human$GNIC <- str_replace(human$GNIC, pattern=",", replace ="") %>% as.numeric
 
-#Excluding unneeded variables:
 
-keep <- c("Country", "SecEd_FtoM", "LFPR_FtoM", "ExpEduYears", "LifeExpectancy", "GNIC", "MMR", "ABR", "RepinParliament")
-library(dplyr)
-human <- dplyr:: select(human, one_of(keep))
+## Exclude unneeded variables. Keep equivalents to "Country", "Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F"
 
-#Removing all rows with missing value
+# List columns in human
+colnames(human)
+
+keepVariables <- c("Country", "SecEd_FtoM", "LFPR_FtoM", "ExpEduYears", "LifeExpectancy", "GNIC", "MMR", "ABR", "RepinParliament")
+human <- select(human, one_of(keepVariables))
+
+
+## Remove countries with missing values
+# filter out all rows with NA values
 human <- filter(human, complete.cases(human))
 
-#Remove the observations which relate to regions instead of countries.
+
+## Remove region observations at the end of the dataframe
+# look at the last 10 observations of human
+tail(human, n = 10)
+
+# define the last indice we want to keep
+last <- nrow(human) - 7
+
+# choose everything until the last 7 observations
+human <- human[1:last, ]
+
+
+## Define rownames as the country names. One should end up with 155 observations and 8 variables.
+# add countries as rownames
 rownames(human) <- human$Country
-n_until <- nrow(human) - 7
-human <- human[1:n_until, ]
 
-#Removing country variable
-human <- dplyr:: select(human, -Country)
+# Remove the country variable
+human <- select(human, -Country)
 
-#saving and overwriting previous human data
+# Save as .csv file
 write.csv(human,"C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/human.csv", row.names = FALSE)
 
