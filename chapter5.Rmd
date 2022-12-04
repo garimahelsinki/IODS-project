@@ -1,0 +1,219 @@
+# Chapter 5: Dimensionality reduction techniques
+
+```{r}
+date()
+```
+
+**For this assignment, we will use two data set, namely 'human' data set and 'tea' data set**
+
+## Description of the Data
+
+```{r}
+setwd("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data")
+
+library(readr)
+
+#Loading the human data set
+human <- read.table("C:/Users/Aadhar/Desktop/Uni/Open Data Science/data/human.txt",sep="\t")
+
+dim(human)
+
+str(human)
+View(human)
+```
+**human:** *There are 155 countries in the human dataframe with 8 variables. The variables are:*
+
+SecEd_FtoM: Ratio of females to males educated at secondary and higher education levels
+
+LFPR_FtoM: Ratio of females to males labour market participation rate (LFPR)
+
+ExpEduYears: Expected years of schooling
+
+LifeExpectancy: Life expectancy at birth (years)
+
+GNIC: Gross national income per capita (GNI)
+
+MMR: Maternal mortality ratio (MMR) (deaths per 100 000 live births)
+
+ABR: Adolescent birth rate (ABR) (births per 1 000 women ages 15-19)
+
+RepinParliament: Share of parliamentary seats held by women (% of seats)
+
+## Graphical Overview of Data Set human
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(corrplot)
+library(GGally)
+library(tidyr)
+
+summary(human)
+
+p <- ggpairs(human, lower = list(combo = wrap("facethist", bins = 20)))
+p
+
+#Exploring relationship between variables
+
+cor_matrix <- cor(human) %>% round(digits = 2)
+corrplot(cor_matrix, method="circle", type="upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+```
+
+**Observation**
+**ggpairs plot** *:The distribution of the variables is biased. According to the scatter plot, there seems to be outliers in the plot. This could also be determined from the summary which shows a great deal of range between certain variables like GNIC with Min value at 581 and maximum being 123124, or MMR with MIn. at 1and Max at 1100*
+
+**Corrplot** *: According to the Correlation plot, we can say that the variables MMR and ABR have a strong positive correlation. Similarly, ExpEduYear and and Life expectancy too have a positive relationship. On the other hand, Life expectancy and MMR share a high negative correlation. Interestingly, there is no relationship, positive or negative between GNIC and LFPR_FtoM, and LFPR_FtoM and SecEdFtoM. Besides this, RepinParlimaent share the bare minimum relationship, both positive and negative, with all the other variables.*
+
+```{r}
+#Histogram for better visualization of variables
+
+human %>% 
+  gather(key=var_name, value = value) %>% 
+  ggplot(aes(x=value)) +
+  geom_histogram() +
+  facet_wrap(~var_name, scales = "free_x")
+```
+
+## Principal component analysis (PCA)
+
+*PCA on the raw (non-standardized) human data*
+
+```{r}
+# perform principal component analysis (with the SVD method)
+pcaHuman <- prcomp(human)
+
+# print out a summary of PCA. One gets quite a few warnings. The first component explains a whopping 99.99 % of the variance.
+s <- summary(pcaHuman)
+s
+
+# rounded percetanges of variance captured by each PC
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+
+# print out the percentages of variance
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot of the principal component representation and the original variables using the first 2 components. GNI explains looks to explain pretty much all of the first principal component.
+biplot(pcaHuman, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2], xlim = c(-0.5, 0.2))
+
+```
+
+**Observation**
+*According to the above table, PC1 explains that it contains all variance which we can see from the proportion of variance being 9.999e-01 and for others being 0*
+
+**Observations for bi-plot**
+*Assuming that characteristics with more variation are more significant than those with lesser variance, PCA appears sensitive to the relative scale of the original variables. Among other variables, GNIC is distinctive. There are some outliers like 44, 11, 30, etc that may be seen in the scatter plot because the GNIC is on a completely different scale than the other variables*
+
+## Standardize, Repeat and Interpret both the analysis
+
+```{r}
+
+# standardize the variables
+human_std <- scale(human)
+
+# perform principal component analysis (with the SVD method)
+pca_human_std1 <- prcomp(human_std)
+
+s2 <- summary(pca_human_std1)
+s2
+```
+
+```{r}
+# Percentages of variance for the plot titles
+pr_pca <- round(100*s2$importance[2, ], digits = 1)
+
+pr_pca
+
+pc_lab2 <- paste0(names(pr_pca), " (", pr_pca, "%)")
+biplot(pca_human_std1, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"), xlab = pc_lab2[1], ylab = pc_lab2[2])
+```
+
+**Observation**
+*PC1 explains 53.6% and PC2 explains 16.2% the variance of the eight variables. According to my understanding, in the previous plots it was assumed that, the bigger the mean, the bigger is the importance which is why we saw that in the previous plot, GNIC had a more distinct representation but now we can see that all variables are differently distributed. We can also say that results differed from each others, due to different scales used in outcomes and that there were a lot of zero-length arrows in the raw-model, which wasnt there for GNIC in this plot.*
+
+## Personal Interpretations based on PCA biplots
+
+*Standardization makes it simpler to see the relationships between various variables. Based on the biplot, he first component PC1 represents variables relating to welfare and living standards, and the second component PCA2 is related to equality-related issues. These problems doesnt seem to be correlated according to the visualization of plots*
+
+*After scaling, the biplots are unquestionably simpler to read because the various variables are on comparable scales rather than drastically different ones. I anticipate that PC1 mostly refers to the amount of resources invested in people, such as education and medical care. PC2 may be a type of equality metric that assesses how successfully women can participate in the workforce as opposed to staying at home.*
+
+*It's remarkable that these two aspects are different given that the socioeconomic level of women appears to be directly tied to reproduction. One interpretation is that while addressing concerns with reproductive rights is helpful, issues with women's status remain a component of issues that require attention.*
+
+## The tea data 
+
+**About the data set**
+*The tea data comes from the FactoMineR package and it is measured with a questionnaire on tea: 300 individuals were asked how they drink tea (18 questions) and what are their product's perception (12 questions). In addition, some personal details were asked (4 questions).*
+
+```{r}
+#Load the tea dataset and convert its character variables to factors
+
+library(FactoMineR)
+
+data(tea)
+str(tea)
+```
+
+**Observation**
+*As stated above, the tea variable has 300 observations and 36 variables. All the variables are in form of factor except age which is present as an integer* 
+
+## Multiple Correspondence Analysis (MCA) on the tea data 
+
+*Creating new data set keep2 which has variables that are capable to analyse the way and time prefernces of people for having tea*
+```{r}
+library(dplyr)
+library(tidyr)
+
+# column names to keep in the dataset
+keep2 <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+# select the 'keep2' to create a new dataset
+tea2 <- dplyr::select(tea, one_of(keep2))
+
+# visualize the dataset
+gather(tea2) %>% ggplot(aes(value)) + 
+facet_wrap("key", scales = "free") + 
+geom_bar() + 
+theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+```
+
+**Observation**
+*From the above visualization we can see that number of people who use tea bag is more. More people preferred to have their tea alone and not during the lunch. The preference for tea was most Earl Grey and choice to have sugar got a mixed reaction but more people inclined towards not sugar. Interestingly, People were seen to have their tea mostly in chainstore instead of tea shop.* 
+
+**MCA for data set tea**
+```{r}
+mca <- MCA(tea2)
+
+summary(mca)
+```
+
+**Observation**
+*The executive summary demonstrates that the dimensions don't account for a sizable fraction of the total variance. The dimensions and the variables do not have any compelling relationships.*
+
+**Visualization of MCA Plot**
+```{r}
+# visualize MCA
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+**Observation**
+*The plot displays how and where the variables interact to DIM1 at 15.24% and how they are connected to DIM2 at 14.23% as well. A number of other factors are connected to both dimensions.*
+
+*Dimensions 1 and 2 correspond mostly to what package people use their tea in, where they drink and the price of the tea. There is also shown correspondence to what kind of tea is drank, and if they add sugar or not.*
+
+*Based on the plot, we can see that variable responses tea shops, unpackaged, green, alone are highly related to Dim 1 whereas chainstore + tea shops, tea-bag + unpackaged are highly related to Dim 2 with many other responses falling in between*
+
+
+-----**End of Chapter 5**-----
+
+
+
+
+
+
+
+
+
+
