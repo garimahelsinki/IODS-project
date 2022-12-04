@@ -40,7 +40,7 @@ output:
 ***
 
 ```{r child = "chapter5.Rmd"}
-#This will include Chapter: 4
+#This will include Chapter: 5
 
 ```
 
