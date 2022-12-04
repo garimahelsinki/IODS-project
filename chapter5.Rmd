@@ -104,7 +104,7 @@ biplot(pcaHuman, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[
 *According to the above table, PC1 explains that it contains all variance which we can see from the proportion of variance being 9.999e-01 and for others being 0*
 
 **Observations for bi-plot**
-*Assuming that characteristics with more variation are more significant than those with lesser variance, PCA appears sensitive to the relative scale of the original variables. Among other variables, GNIC is distinctive. There are some outliers like 44, 11, 30, etc that may be seen in the scatter plot because the GNIC is on a completely different scale than the other variables*
+*Assuming that characteristics with more variation are more significant than those with lesser variance, PCA appears sensitive to the relative scale of the original variables. Among other variables, GNIC is distinctive. There are some outliers like Chad, Sierra Leone, Qatar, Central African Republic, etc that may be seen in the scatter plot because the GNIC is on a completely different scale than the other variables*
 
 ## Standardize, Repeat and Interpret both the analysis
 
