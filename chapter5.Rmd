@@ -86,7 +86,7 @@ pcaHuman <- prcomp(human)
 s <- summary(pcaHuman)
 s
 
-# rounded percetanges of variance captured by each PC
+# rounded percentages of variance captured by each PC
 pca_pr <- round(100*s$importance[2, ], digits = 1)
 
 # print out the percentages of variance
@@ -95,7 +95,7 @@ pca_pr
 # create object pc_lab to be used as axis labels
 pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
 
-# draw a biplot of the principal component representation and the original variables using the first 2 components. GNI explains looks to explain pretty much all of the first principal component.
+# draw a biplot of the principal component representation and the original variables using the first 2 components. GNIC explains looks to explain pretty much all of the first principal component.
 biplot(pcaHuman, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2], xlim = c(-0.5, 0.2))
 
 ```
